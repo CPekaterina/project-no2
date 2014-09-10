@@ -9,7 +9,7 @@ Desktop.ini
 $RECYCLE.BIN/
 
 #src-repository
-&src/
+src/**
 
 # Windows Installer files
 *.cab
