@@ -1,7 +1,9 @@
 #include <src/UnitTest++.h>
 #include <iomanip>
 #include <iostream>
-
+#include <cmath>
+#include <fstream>
+#include <src/
 
 using namespace std;
 
@@ -52,7 +54,7 @@ int main()
         }
     }
 
-    printmatrix(A,n,n);
+    //printmatrix(A,n,n);
 
     return UnitTest::RunAllTests();
 }
