@@ -20,8 +20,7 @@ SOURCES += main.cpp \
     src/TestRunner.cpp \
     src/TimeConstraint.cpp \
     src/Win32/TimeHelpers.cpp \
-    src/XmlTestReporter.cpp \
-    src/lib/lib.cpp
+    src/XmlTestReporter.cpp
 
 
 HEADERS += \
@@ -48,4 +47,4 @@ HEADERS += \
     src/Win32/TimeHelpers.h \
     src/UnitTest++.h \
     src/XmlTestReporter.h \
-    src/lib/lib.hpp
+    src/lib/lib.h
