@@ -11,6 +11,7 @@ void printmatrix(double ** A, int n, int m);
 void jacobi (double **A, double **R, int n);
 void jacobi_rot (double s, double c,int k,int l,int n, double **A);
 bool max_nondig(double ** A, int n, int* k, int* l);
+void bsort(double*v,int n);
 
 
 TEST(WillFail) {
@@ -40,7 +41,10 @@ int main()
     //compute step h
 
     double h = rho_max/double(n_step);
-
+    cout << "The steplength is: " << h << endl;
+    cout << "The nondiag elements are then: " << -1./(h*h) << endl;
+    cout << "The diag elements start with: " << 2./(h*h)+h*h << endl;
+        cout << "The diag elements end with: " << 2./(h*h)+n*n*h*h << endl;
     // write the matrix for Schrödingers equation:
 
     double **A;
@@ -75,9 +79,9 @@ int main()
     }
 
 
-//    printmatrix(A,n,n);
+   //printmatrix(A,n,n);
      jacobi(A,R,n);
-//    printmatrix(A,n,n);
+     //printmatrix(A,n,n);
 
 
 
@@ -106,31 +110,38 @@ void printmatrix(double ** A, int n, int m)
 
 void jacobi (double **A, double **R, int n)
 {
-    int k=1,l=0,z=0;                        //set k,l to the first lower-triangle matrix element, z count the number of rotations
+    int k,l,z=0;                        //set k,l to the first lower-triangle matrix element, z count the number of rotations
     while(max_nondig(A,n,&k,&l)==false)     // while the max^2 of one element of lower-triangle is larger than epsilon
     {
         double t1, t2, t, tau, c, s;
-        tau=(A[l][l]-A[k][k])/(2.*A[k][l]); // formulas from the lecture notes to obtain cos() and sin()
-        t1= -tau+sqrt(1.+tau*tau);
-        t2= -tau-sqrt(1.+tau*tau);
-        if(abs(t1)>abs(t2)){t=t2;}          //use the smaller of the roots
+        tau=(A[l][l]-A[k][k])/(double(2)*A[k][l]); // formulas from the lecture notes to obtain cos() and sin()
+        t1= -tau+sqrt(double(1)+tau*tau);
+        t2= -tau-sqrt(double(1)+tau*tau);
+        if(fabs(t1)>fabs(t2)){t=t2;}          //use the smaller of the roots
         else{t=t1;}
-        c=1./sqrt(1+t*t);
+        c=double(1)/sqrt(double(1)+t*t);
         s=c*t;
         z++;                                //increase number of iterations
-
         jacobi_rot(s,c,k,l,n,A);            //rotate A with c and s to put A[k][l] to zero
+        //printmatrix(A,n,n);
+
     }
 
 
     //print the eigenvalues and the number of iterations
+    double*v;
+    v= new double [n];
+    for(int i=0;i<n;i++)v[i]=A[i][i];
 
-    cout << "The eigenvalues are: " << endl;
-    for (int i =0; i<n; i++)
+    bsort(v,n);
+    cout << endl << "The eigenvalues are:" << endl;
+    for(int i=0;i<n;i++)
     {
-        cout << A[i][i] << endl;
+        cout << v[i] << endl;
     }
     cout << "Number of iterations: " << z << endl;
+
+return;
 }
 
 //rotation function
@@ -145,14 +156,16 @@ void jacobi_rot (double s, double c,int k,int l,int n, double **A)
           double tempil = A[i][l];
           A[i][k]=tempik*c-tempil*s;
           A[i][l]=tempil*c+tempik*s;
+          A[k][i]=A[i][k];
+          A[l][i]=A[i][l];
       }
      }
       double tempkk=A[k][k];
       double templl=A[l][l];
       double tempkl=A[k][l];
-      A[k][k]=tempkk*c*c-2.*tempkl*c*s+templl*s*s;
-      A[l][l]=templl*c*c+2*tempkl*c*s+tempkk*s*s;
-      A[k][l]=0.0; //hard coding of the result
+      A[k][k]=tempkk*c*c-double(2)*tempkl*c*s+templl*s*s;
+      A[l][l]=templl*c*c+double(2)*tempkl*c*s+tempkk*s*s;
+      A[k][l]=A[l][k]=0; //hard coding of the result
 }
 
 
@@ -160,22 +173,41 @@ void jacobi_rot (double s, double c,int k,int l,int n, double **A)
 
 bool max_nondig(double ** A, int n, int* k, int* l)
 {
-   double E = 1.0e-8;                   //tolerance E
-   double max = abs(A[*k][*l]);
+    *k=1;
+    *l=0;
+    double E = 1.e-12;                   //tolerance E
+   double max = fabs(A[*k][*l]);
 
    for(int i=1;i<n;i++)                    //iteration over the non-diagonal matrix elements in the lower tri-diagonal
    {
        for(int j=0;j<i;j++)
        {
-           if(abs(A[i][j])>max)
+           if(fabs(A[i][j])>max)
            {
-               max = abs(A[i][j]);
+               max = fabs(A[i][j]);
                *k = i;                      // write row of the new maximum to k;
                *l = j;                      // write column of the new maximum to l;
+          //      cout << *k << "!!" << *l << endl;
            }
-         if(abs(A[i][j])<=E)A[i][j]=0.0; //set values below E to 0
+         if((max*max)<=E)A[i][j]=0.0; //set values below E to 0
        }
    }
-
    return((max*max)<E);
+}
+void bsort(double*v,int n)
+{
+    double min;
+    for(int j=0;j<n;j++)
+    {
+        int k=j;
+        min=v[j];
+        for(int i=j;i<n;i++)
+        {
+            if(min>v[i]){min=v[i];k=i;}
+
+        }
+        v[k]=v[j];
+        v[j]=min;
+    }
+
 }
