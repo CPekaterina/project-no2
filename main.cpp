@@ -20,7 +20,9 @@ TEST(WillFail) {
 
 int main()
 {
-
+    bool runagain = true;
+    while(runagain==true)
+    {
     //read in the number n of steps
     int n_step;
     cout << "How many steps should be taken? n_step= " ;
@@ -83,9 +85,11 @@ int main()
      jacobi(A,R,n);
      //printmatrix(A,n,n);
 
-
-
-
+     //  printmatrix(R,n,n);
+    cout << "Run again? (1/0)" << endl;
+    cin >> runagain;
+    cout << endl << endl;
+    }
 
     return UnitTest::RunAllTests();
 }
@@ -98,7 +102,7 @@ void printmatrix(double ** A, int n, int m)
     for(int i=0;i<n;i++)
     {
         cout << "| ";
-        for(int j=0; j<=i; j++)
+        for(int j=0; j<n; j++)
         {
             cout << setw(6) << A[i][j] << " ";
         }
@@ -110,8 +114,10 @@ void printmatrix(double ** A, int n, int m)
 
 void jacobi (double **A, double **R, int n)
 {
-    int k,l,z=0;                        //set k,l to the first lower-triangle matrix element, z count the number of rotations
-    while(max_nondig(A,n,&k,&l)==false)     // while the max^2 of one element of lower-triangle is larger than epsilon
+    int k,l,z=0;
+    int maxiter =1000000;
+
+    while(max_nondig(A,n,&k,&l)==false && z<maxiter)     // while the max^2 of one element of lower-triangle is larger than epsilon
     {
         double t1, t2, t, tau, c, s;
         tau=(A[l][l]-A[k][k])/(double(2)*A[k][l]); // formulas from the lecture notes to obtain cos() and sin()
@@ -122,8 +128,23 @@ void jacobi (double **A, double **R, int n)
         c=double(1)/sqrt(double(1)+t*t);
         s=c*t;
         z++;                                //increase number of iterations
+        if (z==maxiter-1)
+        {
+            cout << "Maximum number of iterations reached, I am tired and will stop working. Sorry." << endl;
+            break;
+        }
         jacobi_rot(s,c,k,l,n,A);            //rotate A with c and s to put A[k][l] to zero
-        //printmatrix(A,n,n);
+
+        //eigenvectors in rows of R
+
+        for(int i=0;i<n;i++)
+        {
+            double tempki=R[k][i];
+            double templi=R[l][i];
+            R[k][i]=tempki*c-templi*s;
+            R[l][i]=templi*c+tempki*s;
+        }
+
 
     }
 
@@ -135,11 +156,12 @@ void jacobi (double **A, double **R, int n)
 
     bsort(v,n);
     cout << endl << "The eigenvalues are:" << endl;
-    for(int i=0;i<n;i++)
+    for(int i=0;i<5;i++)
     {
         cout << v[i] << endl;
     }
     cout << "Number of iterations: " << z << endl;
+
 
 return;
 }
@@ -187,7 +209,6 @@ bool max_nondig(double ** A, int n, int* k, int* l)
                max = fabs(A[i][j]);
                *k = i;                      // write row of the new maximum to k;
                *l = j;                      // write column of the new maximum to l;
-          //      cout << *k << "!!" << *l << endl;
            }
          if((max*max)<=E)A[i][j]=0.0; //set values below E to 0
        }
