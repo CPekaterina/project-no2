@@ -37,5 +37,62 @@
 \tableofcontents
 \newpage
 
+questions a)
+
+We look at the equation
+
+\begin{equation}
+\left|t\right| = \left|-\tau\pm\sqrt{1+\tau^2}\right|
+\end{equation}
+
+and consider the three cases $\tau=0$, $\tau>0$ and $\tau<0$.
+
+For $\tau=0$ we get
+
+\begin{equation}
+\left|t\right| = \left|\pm1\right| = 1
+\end{equation}
+
+For $\tau>0$ the absolute value of $t$ is smaller for the solution with plus.  
+
+\begin{equation}
+\left|t\right| = \left|-\tau+\sqrt{1+\tau^2}\right|
+\end{equation}
+
+Now we look at $\tau\rightarrow\infty$:   
+
+\begin{equation}  
+\lim\limits_{\tau \rightarrow \infty}{\left|t\right|}=\lim\limits_{\tau \rightarrow \infty}{\left|-\tau+\sqrt{1+\tau^2}\right|}=0  
+\end{equation}
+
+For $\tau<0$ the absolute value of $t$ is smaller for the solution with minus.
+
+\begin{equation}
+\left|t\right| = \left|-\tau-\sqrt{1+\tau^2}\right|
+\end{equation}
+
+So now we look at $\tau\rightarrow-\infty$:
+
+\begin{equation}
+\lim\limits_{\tau \rightarrow -\infty}{\left|t\right|}=\lim\limits_{\tau \rightarrow -\infty}{\left|-\tau-\sqrt{1+\tau^2}\right|}=0  
+\end{equation}
+
+We have seen that for $\tau=0$ the absolute value of $t$ is one and if we increase or decrease $\tau$ it approachs zero.
+
+\begin{equation}
+\left|\tan{\theta}\right|\leq1 \text{for} \left|\theta\right|\leq\frac{\pi}{4}
+\end{equation}
+
+So if we choose $t$ to be the smaller of the roots $\left|\theta\right|\leq\frac{\pi}{4}$ what is minimizing the difference between the matrices A and B. This can be seen if we look at the given equation
+
+\begin{equation}
+||{\bf B}-{\bf A}||_F^2=4(1-c)\sum_{i=1,i\ne k,l}^n(a_{ik}^2+a_{il}^2) +\frac{2a_{kl}^2}{c^2}
+\end{equation}
+
+$(1-c)$ at the beginning of the equation becomes zero when $\cos{\theta}=1$ and than the total first part of the equation is zero. Also the second part of the equation reaches its minimum value for $\cos{\theta}=1$. For $\left|\theta\right|\leq\frac{\pi}{4}$ the value of $\cos{\theta}$ is between $1$ and $\approx 0.7$ so the difference between the matrices A and B we get is near the minimum. This means that the non-diagonal matrix elements of A are nearly zero, what is what we want to achieve.  
+
+  
+ 
+     
 \end{document}
 
