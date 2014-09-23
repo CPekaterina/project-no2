@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include "lib.h"
+#include <time.h>
 
 
 using namespace std;
@@ -83,9 +85,44 @@ int main()
 
    //printmatrix(A,n,n);
      jacobi(A,R,n);
-     //printmatrix(A,n,n);
+   //printmatrix(A,n,n);
 
-     //  printmatrix(R,n,n);
+    //tqli
+    double* e; //vector for diagonal elements
+    double* d; //vector for sub-diagonal elements
+    d = new double[n];
+    e = new double[n];
+    for(int i=0;i<n;i++)
+    {
+        e[i] = -1./(h*h);
+        d[i] = double(2)/(h*h)+((double(i)+1.)*h)*((double(i)+1.)*h);
+    }
+    double **Z; //identity matrix
+    Z = new double* [n];
+    for (int i = 0; i < n; i++)
+        Z[i] = new double[n];
+    for (int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            if(i==j)R[i][j]=1;
+            else R[i][j]=0;
+        }
+    }
+    clock_t start, finish;
+    start = clock();
+    tqli(d,e,n,Z);
+    finish = clock();
+    clock_t t = finish - start;
+
+    bsort(d,n);
+    for(int i=0;i<5;i++)
+    {
+        cout << d[i] << endl;
+    }
+    cout << "Execution time tqli:" << ((double)t)/CLOCKS_PER_SEC << "sec." << endl;
+
+    //  printmatrix(R,n,n);
     cout << "Run again? (1/0)" << endl;
     cin >> runagain;
     cout << endl << endl;
@@ -114,6 +151,9 @@ void printmatrix(double ** A, int n, int m)
 
 void jacobi (double **A, double **R, int n)
 {
+    clock_t start, finish;
+    start = clock();
+
     int k,l,z=0;
     int maxiter =1000000;
 
@@ -148,6 +188,8 @@ void jacobi (double **A, double **R, int n)
 
     }
 
+    finish = clock();
+    clock_t t = finish - start;
 
     //print the eigenvalues and the number of iterations
     double*v;
@@ -158,10 +200,10 @@ void jacobi (double **A, double **R, int n)
     cout << endl << "The eigenvalues are:" << endl;
     for(int i=0;i<5;i++)
     {
-        cout << v[i] << endl;
+        cout << setprecision(4) << v[i] << endl;
     }
     cout << "Number of iterations: " << z << endl;
-
+    cout << "Execution time jacobi: " << ((double)t)/CLOCKS_PER_SEC << "sec." << endl;
 
 return;
 }
@@ -191,7 +233,7 @@ void jacobi_rot (double s, double c,int k,int l,int n, double **A)
 }
 
 
-// finds the maximum of the non-diagonal matrix elements in the lower tri-diagonal and tests if it is larger than the tolerance E
+// finds the maximum of the non-diagonal matrix elements in the lower triangular matrix and tests if it is larger than the tolerance E
 
 bool max_nondig(double ** A, int n, int* k, int* l)
 {
@@ -200,7 +242,7 @@ bool max_nondig(double ** A, int n, int* k, int* l)
     double E = 1.e-12;                   //tolerance E
    double max = fabs(A[*k][*l]);
 
-   for(int i=1;i<n;i++)                    //iteration over the non-diagonal matrix elements in the lower tri-diagonal
+   for(int i=1;i<n;i++)                    //iteration over the non-diagonal matrix elements in the lower triangular matrix
    {
        for(int j=0;j<i;j++)
        {
@@ -232,3 +274,4 @@ void bsort(double*v,int n)
     }
 
 }
+
